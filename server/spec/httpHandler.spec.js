@@ -7,8 +7,6 @@ const queue = require('../js/messageQueue');
 const multipart = require('../js/multipartUtils');
 
 const httpHandler = require('../js/httpHandler');
-const enqueue = require('../js/messageQueue').enqueue;
-
 
 describe('server responses', () => {
 
@@ -64,7 +62,6 @@ describe('server responses', () => {
         expect(res._ended).to.equal(true);
         done();
       });
-      done();
     });
   });
   
