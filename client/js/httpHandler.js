@@ -1,25 +1,30 @@
-(function() {
+(function () {
 
   const serverUrl = 'http://127.0.0.1:3000';
 
-  //
-  // TODO: build the swim command fetcher here
-  //
+  const getDirectionFromServer = () => {
+    $.get(`${serverUrl}/moves`, (direction) => {
+      SwimTeam.move(direction);
+      setTimeout(getDirectionFromServer, 500);
+    });
+  }
+
+  getDirectionFromServer();
 
   /////////////////////////////////////////////////////////////////////
   // The ajax file uplaoder is provided for your convenience!
   // Note: remember to fix the URL below.
   /////////////////////////////////////////////////////////////////////
 
-  const ajaxFileUplaod = (file) => {
+  const ajaxFileUpload = (file) => {
     var formData = new FormData();
     formData.append('file', file);
     $.ajax({
       type: 'POST',
       data: formData,
-      url: 'FILL_ME_IN',
+      url: `${serverUrl}/background.jpg`,
       cache: false,
-      contentType: false,
+      contentType: 'multipart/form',
       processData: false,
       success: () => {
         // reload the page
@@ -28,7 +33,7 @@
     });
   };
 
-  $('form').on('submit', function(e) {
+  $('form').on('submit', function (e) {
     e.preventDefault();
 
     var form = $('form .file')[0];
@@ -43,7 +48,7 @@
       return;
     }
 
-    ajaxFileUplaod(file);
+    ajaxFileUpload(file);
   });
 
 })();
