@@ -2,35 +2,29 @@
 
   const serverUrl = 'http://127.0.0.1:3000';
 
-  const ajaxSwimCommand = () => {
-    $.ajax({
-      url: serverUrl,
-      type: 'GET',
-      contentType: false,
-      processData: false,
-      cache: false,
-      success: (data) => {
-        SwimTeam.move(data);
-      },
-      error: function (error) { console.error('swimmers: Failed to fetch command', error); }
-    })
+  const getDirectionFromServer = () => {
+    $.get(`${serverUrl}/moves`, (direction) => {
+      SwimTeam.move(direction);
+      setTimeout(getDirectionFromServer, 500);
+    });
   };
-  setInterval(ajaxSwimCommand, 10000);
+
+  getDirectionFromServer();
 
   /////////////////////////////////////////////////////////////////////
   // The ajax file uplaoder is provided for your convenience!
   // Note: remember to fix the URL below.
   /////////////////////////////////////////////////////////////////////
 
-  const ajaxFileUplaod = (file) => {
+  const ajaxFileUpload = (file) => {
     var formData = new FormData();
     formData.append('file', file);
     $.ajax({
       type: 'POST',
       data: formData,
-      url: serverUrl,
+      url: `${serverUrl}/background.jpg`,
       cache: false,
-      contentType: false,
+      contentType: 'multipart/form',
       processData: false,
       success: () => {
         // reload the page
@@ -41,7 +35,6 @@
 
   $('form').on('submit', function (e) {
     e.preventDefault();
-    // ajaxSwimCommand();
 
     var form = $('form .file')[0];
     if (form.files.length === 0) {
@@ -55,7 +48,6 @@
       return;
     }
 
-    ajaxFileUplaod(file);
+    ajaxFileUpload(file);
   });
-
 })();
